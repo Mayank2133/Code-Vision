@@ -1,0 +1,60 @@
+# ========================
+# Node.js / Express files
+# ========================
+node_modules/
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================
+# C++ build artifacts
+# ========================
+*.exe
+*.out
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.class
+*.gch
+
+# Temp analyzer output
+input.txt
+symbols.json
+ast.json
+
+# ========================
+# OS-specific files
+# ========================
+.DS_Store         # macOS
+Thumbs.db         # Windows
+desktop.ini       # Windows
+
+# ========================
+# IDE/editor configs
+# ========================
+.vscode/
+.idea/
+*.swp
+*~
+
+# ========================
+# Logs / debug
+# ========================
+logs/
+*.log
+
+# ========================
+# Coverage / test output
+# ========================
+coverage/
+*.lcov
+
+# ========================
+# Misc
+# ========================
+dist/
+build/
+tmp/
