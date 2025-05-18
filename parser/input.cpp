@@ -294,7 +294,7 @@ int main(int argc, char* argv[]) {
     // Prepare JSON token output
     json j;
     for (const auto& token : tokens) {
-        if (token.type == "IDENTIFIER" || token.type == "KEYWORD")
+        if (token.type == "IDENTIFIER" || token.type == "KEYWORD" || token.type == "OPERATOR" || token.type == "DELIMITER")
             j["symbols"].push_back({{"type", token.type}, {"name", token.value}});
     }
 
