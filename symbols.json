@@ -1,0 +1,60 @@
+{
+    "symbols": [
+        {
+            "name": "include",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "stdio",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "h",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "int",
+            "type": "KEYWORD"
+        },
+        {
+            "name": "main",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "int",
+            "type": "KEYWORD"
+        },
+        {
+            "name": "x",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "float",
+            "type": "KEYWORD"
+        },
+        {
+            "name": "y",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "if",
+            "type": "KEYWORD"
+        },
+        {
+            "name": "x",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "return",
+            "type": "KEYWORD"
+        },
+        {
+            "name": "x",
+            "type": "IDENTIFIER"
+        },
+        {
+            "name": "y",
+            "type": "IDENTIFIER"
+        }
+    ]
+}

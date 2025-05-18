@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Compiler Analysis</h1>
+        
+        <div class="editor">
+            <textarea id="code">#include <stdio.h>
+
+int main() {
+    int x = 42;
+    float y = 3.14;
+    if (x > 0) {
+        return x + y;
+    }
+}</textarea>
+            <button id="compile-btn">Compile</button>
+        </div>
+
+        <div class="results">
+            <div class="panel">
+                <h2>Symbol Table</h2>
+                <div class="table-container">
+                    <table id="symbol-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Line</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Parse Tree</h2>
+                <div id="ast-visualization"></div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="script.js"></script>
+</body>
+</html>
