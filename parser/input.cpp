@@ -18,12 +18,55 @@ int current = 0;
 
 // Language definitions
 unordered_set<string> keywords = {
-    "int", "float", "char", "double", "void", "return", "if", "else", "while", "for", "switch", "case", "default", "break"
+    // Original keywords
+    "int", "float", "char", "double", "void", "return", "if", "else", 
+    "while", "for", "switch", "case", "default", "break",
+    
+    // Added C++ keywords
+    "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
+    "atomic_commit", "atomic_noexcept", "auto", "bitand", "bitor", 
+    "bool", "catch", "class", "co_await", "co_return", "co_yield",
+    "compl", "concept", "const", "consteval", "constexpr", "constinit",
+    "const_cast", "continue", "decltype", "delete", "do", "dynamic_cast",
+    "enum", "explicit", "export", "extern", "false", "friend", "goto",
+    "import", "inline", "long", "module", "mutable", "namespace", "new",
+    "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq",
+    "private", "protected", "public", "reflexpr", "register", "reinterpret_cast",
+    "requires", "short", "signed", "sizeof", "static", "static_assert",
+    "static_cast", "struct", "synchronized", "template", "this", "thread_local",
+    "throw", "true", "try", "typedef", "typeid", "typename", "union", 
+    "unsigned", "using", "virtual", "volatile", "wchar_t", "xor", "xor_eq",
+    
+    // C++20 concepts
+    "requires",
+    
+    // C++23 keywords
+    "char8_t", "char16_t", "char32_t", "constexpr", "consteval", 
+    "constinit", "typename"
+};
+unordered_set<char> operators = {
+    // Arithmetic
+    '+', '-', '*', '/', '%',
+    // Comparison/Logical
+    '=', '<', '>', '!', '&', '|',
+    // Bitwise
+    '^', '~',
+    // Other
+    '?'
 };
 
-unordered_set<char> operators = {'+', '-', '*', '/', '=', '<', '>', '!', '&', '|', '%'};
-unordered_set<char> delimiters = {'(', ')', '{', '}', '[', ']', ';', ',', ':'};
-
+unordered_set<char> delimiters = {
+    // Brackets
+    '(', ')', '{', '}', '[', ']',
+    // Statement/expression
+    ';', ',', ':', 
+    // Preprocessor
+    '#',
+    // Member access
+    '.',
+    // Literal delimiters
+    '\'', '"'
+};
 // === Lexical Analysis ===
 bool isKeyword(const string& s) {
     return keywords.find(s) != keywords.end();
