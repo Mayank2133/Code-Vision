@@ -48,25 +48,7 @@ h2 {
     margin-right: 30px;
 }
 
-#code {
-    width: 100%;
-    height: 200px;
-    padding: 15px;
-    border: 2px solid #bdc3c7;
-    border-radius: 4px;
-    font-family: 'Consolas', monospace;
-    font-size: 14px;
-    resize: vertical;
-    margin-bottom: 10px;
-    background-color: #f8fafc;
-    transition: all 0.3s ease;
-}
 
-#code:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
 
 #compile-btn {
     background: linear-gradient(135deg, var(--primary), #2980b9);
@@ -249,5 +231,15 @@ tr:hover {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Monaco Editor Container */
+#code {
+    margin-bottom: 10px;
+}
+
+/* Override Monaco's default font */
+.monaco-editor {
+    font-family: 'Consolas', monospace !important;
 }
 

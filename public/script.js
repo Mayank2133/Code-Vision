@@ -1,5 +1,5 @@
 document.getElementById("compile-btn").addEventListener("click", async () => {
-    const code = document.getElementById("code").value;
+    const code = window.editor.getValue(); // Get code from Monac
     const spinner = document.getElementById("spinner");
     spinner.style.display = "inline-block"; // Show spinner
     const res = await fetch("/compile", {

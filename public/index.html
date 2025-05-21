@@ -12,15 +12,8 @@
         <h1>Compiler Analysis</h1>
         
         <div class="editor">
-            <textarea id="code">#include <stdio.h>
-
-int main() {
-    int x = 42;
-    float y = 3.14;
-    if (x > 0) {
-        return x + y;
-    }
-}</textarea>
+            <!-- Replace the existing <textarea> with this div -->
+            <div id="code" style="height: 300px; border: 2px solid #bdc3c7; border-radius: 4px;"></div>
             <div id="error-box" class="error" style="display: none;"></div>
 
             <button id="compile-btn">
@@ -54,7 +47,28 @@ int main() {
         </div>
     </div>
 
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script>
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+        const editor = monaco.editor.create(document.getElementById('code'), {
+        value: `int main() {\n    // Your code here\n}`,  // Default code
+        language: 'cpp',
+        theme: 'vs-dark',
+        fontSize: 14,
+        lineNumbers: 'on',
+        roundedSelection: false,
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        tabSize: 4,
+        minimap: { enabled: true },
+        autoIndent: 'full'
+        });
+
+        // Expose editor instance to global scope for script.js
+        window.editor = editor;
+    });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

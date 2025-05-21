@@ -1,4 +1,4 @@
 int main() {
-    cout << "Welcome to GFG";
-    return 0;
+    int a=1;
+    cout << "Hello"
 }
