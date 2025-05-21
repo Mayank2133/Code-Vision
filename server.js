@@ -16,12 +16,19 @@ app.post("/compile", (req, res) => {
     const code = req.body.code;
     fs.writeFileSync("input.txt", code);
 
+    if (fs.existsSync("symbols.json")) {
+    fs.unlinkSync("symbols.json"); // delete old symbol table
+    }
+
+
     exec("g++ -std=c++11 parser/input.cpp -o parser.exe && parser.exe input.txt", (err, stdout, stderr) => {
         if (err) {
-            console.error("Compilation or Execution Error:", err);
-            console.error("stderr:", stderr);
-            return res.status(500).send("Compilation or execution error");
+            // Combine stdout and stderr so we catch parse errors (stdout) or compile errors (stderr)
+            const output = (stdout + stderr).toString().trim() || "Compilation or execution error";
+            console.error("Analyzer Error Output:", output);
+            return res.status(400).json({ error: output });
         }
+
 
         if (!fs.existsSync("symbols.json")) {
             console.error("symbols.json not found!");

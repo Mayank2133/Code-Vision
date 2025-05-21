@@ -1,9 +1,1 @@
-#include <stdio.h>
-
-int main() {
-    int x = 42;
-    float y = 3.14;
-    if (x > 0) {
-        return x + y;
-    }
-}
+int main(){int a=c;}

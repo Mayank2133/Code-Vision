@@ -6,11 +6,23 @@ document.getElementById("compile-btn").addEventListener("click", async () => {
         body: JSON.stringify({ code })
     });
 
+    const errorBox = document.querySelector("#error-box") || (() => {
+    const div = document.createElement("div");
+    div.id = "error-box";
+    div.className = "error";
+    document.querySelector(".editor").appendChild(div);
+    return div;
+    })();
+
     if (!res.ok) {
-    const text = await res.text(); // read as plain text
-    alert("Server error: " + text);
-    return;
+        const { error } = await res.json();
+        errorBox.textContent = error;
+        errorBox.style.display = "block";
+        return;
     }
+
+    errorBox.style.display = "none"; // hide on success
+
 
     const data = await res.json(); // only run if JSON is expected
 

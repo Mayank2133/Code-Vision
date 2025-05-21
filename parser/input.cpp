@@ -149,7 +149,7 @@ void Statement();
 void Block();
 void Condition();
 void Switch();
-
+void FunctionDefinition();
 void Factor() {
     if (peek().type == "NUMBER" || peek().type == "IDENTIFIER") get();
     else if (match("DELIMITER", "(")) {
@@ -310,9 +310,35 @@ void Statement() {
     }
 }
 
+void FunctionDefinition() {
+    if (!match("KEYWORD")) error("Expected return type");
+    if (!match("IDENTIFIER")) error("Expected function name");
+    if (!match("DELIMITER", "(")) error("Expected '(' after function name");
+    if (!(peek().type == "DELIMITER" && peek().value == ")")) {
+        do {
+            if (!match("KEYWORD")) error("Expected parameter type");
+            if (!match("IDENTIFIER")) error("Expected parameter name");
+        } while (match("DELIMITER", ","));
+    }
+    if (!match("DELIMITER", ")")) error("Expected ')' after parameters");
+    Block();
+}
+
 void Program() {
     while (peek().type != "END") {
-        Statement();
+        if (peek().type == "KEYWORD") {
+            string val = peek().value;
+            Token next1 = (current+1 < (int)tokens.size()) ? tokens[current+1] : Token{"",""};
+            Token next2 = (current+2 < (int)tokens.size()) ? tokens[current+2] : Token{"",""};
+            if ((val == "int" || val == "float" || val == "char" || val == "double" || val == "void") &&
+                next1.type == "IDENTIFIER" && next2.type == "DELIMITER" && next2.value == "(") {
+                FunctionDefinition();
+            } else {
+                Statement();
+            }
+        } else {
+            Statement();
+        }
     }
     cout << "\n✅ Syntax is correct.\n";
 }
@@ -333,6 +359,7 @@ int main(int argc, char* argv[]) {
     infile.close();
 
     lexicalAnalyse(code);
+    Program();
 
     // Prepare JSON token output
     json j;
