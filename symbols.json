@@ -21,20 +21,20 @@
             "type": "DELIMITER"
         },
         {
-            "name": "int",
+            "name": "cout",
             "type": "KEYWORD"
         },
         {
-            "name": "a",
-            "type": "IDENTIFIER"
-        },
-        {
-            "name": "=",
+            "name": "<<",
             "type": "OPERATOR"
         },
         {
-            "name": "c",
-            "type": "IDENTIFIER"
+            "name": ";",
+            "type": "DELIMITER"
+        },
+        {
+            "name": "return",
+            "type": "KEYWORD"
         },
         {
             "name": ";",

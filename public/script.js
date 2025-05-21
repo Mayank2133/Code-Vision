@@ -1,10 +1,14 @@
 document.getElementById("compile-btn").addEventListener("click", async () => {
     const code = document.getElementById("code").value;
+    const spinner = document.getElementById("spinner");
+    spinner.style.display = "inline-block"; // Show spinner
     const res = await fetch("/compile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code })
     });
+
+    spinner.style.display = "none"; // Hide spinner after response
 
     const errorBox = document.querySelector("#error-box") || (() => {
     const div = document.createElement("div");

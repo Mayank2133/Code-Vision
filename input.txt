@@ -1,1 +1,4 @@
-int main(){int a=c;}
+int main() {
+    cout << "Welcome to GFG";
+    return 0;
+}

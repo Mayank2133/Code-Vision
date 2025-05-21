@@ -36,7 +36,7 @@ unordered_set<string> keywords = {
     "static_cast", "struct", "synchronized", "template", "this", "thread_local",
     "throw", "true", "try", "typedef", "typeid", "typename", "union", 
     "unsigned", "using", "virtual", "volatile", "wchar_t", "xor", "xor_eq",
-    
+    "cout", "cin"
     // C++20 concepts
     "requires",
     
@@ -88,9 +88,23 @@ void lexicalAnalyse(const string& code) {
             continue;
         }
 
+        // Handle string literals
+        if (code[i] == '"') {
+            string str = "";
+            i++; // Skip opening "
+            while (i < code.length() && code[i] != '"') {
+                str += code[i++];
+            }
+            if (i < code.length()) i++; // Skip closing "
+            tokens.push_back({"STRING", str});
+            continue;
+        }
+
         if (isalpha(code[i]) || code[i] == '_') {
             string token = "";
             while (i < (int)code.length() && (isalnum(code[i]) || code[i] == '_')) token += code[i++];
+            
+            
             if (isKeyword(token)) tokens.push_back({"KEYWORD", token});
             else tokens.push_back({"IDENTIFIER", token});
         } else if (isdigit(code[i])) {
@@ -103,7 +117,12 @@ void lexicalAnalyse(const string& code) {
             tokens.push_back({"NUMBER", number});
         } else if (isOperator(code[i])) {
             string op(1, code[i]);
-            if (i + 1 < (int)code.length() && (code[i] == '=' || code[i] == '!' || code[i] == '<' || code[i] == '>') && code[i+1] == '=') {
+             // Check for multi-character operators: << or >>
+            if (i + 1 < (int)code.length() && (code[i] == '<' || code[i] == '>') && code[i+1] == code[i]) {
+                op += code[i+1];
+                i += 2;
+            }
+            else if (i + 1 < (int)code.length() && (code[i] == '=' || code[i] == '!' || code[i] == '<' || code[i] == '>') && code[i+1] == '=') {
                 op += code[i+1];
                 i += 2;
             } else {
@@ -151,11 +170,14 @@ void Condition();
 void Switch();
 void FunctionDefinition();
 void Factor() {
-    if (peek().type == "NUMBER" || peek().type == "IDENTIFIER") get();
-    else if (match("DELIMITER", "(")) {
+    if (peek().type == "NUMBER" || peek().type == "IDENTIFIER" || peek().type == "STRING") {
+        get();
+    } else if (match("DELIMITER", "(")) {
         Expression();
         if (!match("DELIMITER", ")")) error("Expected ')'");
-    } else error("Expected number, identifier, or '('");
+    } else {
+        error("Expected number, identifier, string, or '('");
+    }
 }
 
 void Term() {
@@ -250,6 +272,9 @@ void ForLoop() {
     Block();
 }
 
+
+
+
 void Switch() {
     if (!match("KEYWORD", "switch")) error("Expected 'switch'");
     if (!match("DELIMITER", "(")) error("Expected '(' after switch");
@@ -289,23 +314,77 @@ void Block() {
     }
 }
 
+void StreamStatement() {
+    Token streamToken = get(); // Consume 'cout' or 'cin'
+    
+    // Expect << for cout or >> for cin
+    string expectedOp = (streamToken.value == "cout") ? "<<" : ">>";
+    
+    do {
+        if (!match("OPERATOR", expectedOp)) {
+            error("Expected '" + expectedOp + "' after " + streamToken.value);
+        }
+        Expression(); // Parse the expression being streamed
+    } while (peek().value == expectedOp);
+
+    if (!match("DELIMITER", ";")) {
+        error("Expected ';' after " + streamToken.value + " statement");
+    }
+}
+
+
 void Statement() {
+
+     
     if (peek().type == "KEYWORD") {
         string kw = peek().value;
-        if (kw == "int" || kw == "float" || kw == "char" || kw == "double") DeclarationOrAssignment();
-        else if (kw == "void") error("Void type cannot be used for variable declaration");
-        else if (kw == "if") IfStatement();
-        else if (kw == "while") WhileLoop();
-        else if (kw == "for") ForLoop();
-        else if (kw == "switch") Switch();
-        else if (kw == "break") {
-            get();
-            if (!match("DELIMITER", ";")) error("Expected ';' after break");
+
+        if (kw == "int" || kw == "float" || kw == "char" || kw == "double") {
+            DeclarationOrAssignment();
         }
-        else error("Unknown keyword");
-    } else if (peek().type == "IDENTIFIER") {
+        else if (kw == "cout" || kw == "cin") {
+            StreamStatement();
+            return;
+        }
+        else if (kw == "void") {
+            error("Void type cannot be used for variable declaration");
+        }
+        else if (kw == "if") {
+            IfStatement();
+        }
+        else if (kw == "while") {
+            WhileLoop();
+        }
+        else if (kw == "for") {
+            ForLoop();
+        }
+        else if (kw == "switch") {
+            Switch();
+        }
+        else if (kw == "return") {
+            get(); // consume 'return'
+            // check if return is followed by an expression or just ;
+            if (!(peek().type == "DELIMITER" && peek().value == ";")) {
+                Expression();  // return value
+            }
+            if (!match("DELIMITER", ";")) {
+                error("Expected ';' after return");
+            }
+        }
+        else if (kw == "break") {
+            get(); // consume 'break'
+            if (!match("DELIMITER", ";")) {
+                error("Expected ';' after break");
+            }
+        }
+        else {
+            error("Unknown keyword");
+        }
+    }
+    else if (peek().type == "IDENTIFIER") {
         Assignment();
-    } else {
+    }
+    else {
         error("Unexpected token");
     }
 }
@@ -342,6 +421,8 @@ void Program() {
     }
     cout << "\n✅ Syntax is correct.\n";
 }
+
+
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
