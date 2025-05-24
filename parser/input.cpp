@@ -8,6 +8,21 @@
 using json = nlohmann::json;
 using namespace std;
 
+struct ParseNode {
+    string name;
+    vector<ParseNode> children;
+};
+
+json nodeToJson(const ParseNode &node) {
+    json j;
+    j["name"] = node.name;
+    j["children"] = json::array(); // Always create the children field
+    for (const auto& child : node.children) {
+            j["children"].push_back(nodeToJson(child));
+        }
+    return j;
+}
+
 struct Token {
     string type;
     string value;
@@ -15,6 +30,7 @@ struct Token {
 
 vector<Token> tokens;
 int current = 0;
+ParseNode parseTreeRoot;
 
 // Language definitions
 unordered_set<string> keywords = {
@@ -163,213 +179,263 @@ void error(const string& message) {
     exit(1);
 }
 
-void Expression();
-void Statement();
-void Block();
-void Condition();
-void Switch();
-void FunctionDefinition();
-void Factor() {
+ParseNode Expression();
+ParseNode Statement();
+ParseNode Block();
+ParseNode Condition();
+ParseNode Switch();
+ParseNode FunctionDefinition();
+ParseNode Factor() {
+    ParseNode node{"Factor"};
     if (peek().type == "NUMBER" || peek().type == "IDENTIFIER" || peek().type == "STRING") {
-        get();
+        Token t = get();
+        node.children.push_back(ParseNode{t.value});
     } else if (match("DELIMITER", "(")) {
-        Expression();
+        node.children.push_back(Expression());
         if (!match("DELIMITER", ")")) error("Expected ')'");
     } else {
         error("Expected number, identifier, string, or '('");
     }
+    return node;
 }
 
-void Term() {
-    Factor();
+ParseNode Term() {
+    ParseNode node{"Term"};
+    node.children.push_back(Factor());
+    
     while (peek().value == "*" || peek().value == "/") {
-        get(); Factor();
+        Token op = get();
+        ParseNode opNode{"Operator: " + op.value};
+        node.children.push_back(opNode);
+        node.children.push_back(Factor());
     }
+    return node;
 }
 
-void Expression() {
-    Term();
+ParseNode Expression() {
+    ParseNode node{"Expression"};
+    node.children.push_back(Term());
+    
     while (peek().value == "+" || peek().value == "-") {
-        get(); Term();
+        Token op = get();
+        ParseNode opNode{"Operator: " + op.value};
+        node.children.push_back(opNode);
+        node.children.push_back(Term());
     }
+    return node;
 }
 
-void Condition() {
-    Expression();
+ParseNode Condition() {
+    ParseNode node{"Condition"};
+    node.children.push_back(Expression());
     if (peek().type == "OPERATOR" && (peek().value == "<" || peek().value == ">" || peek().value == "==" || peek().value == "!=" || peek().value == "<=" || peek().value == ">=")) {
-        get(); Expression();
+        Token op = get();
+        ParseNode opNode{"Operator: " + op.value};
+        node.children.push_back(opNode);
+        node.children.push_back(Expression());
     } else error("Expected relational operator in condition");
+    return node;
 }
 
-void DeclarationOrAssignment() {
+ParseNode DeclarationOrAssignment() {
+    ParseNode node{"DeclarationOrAssignment"};
     // The first token is type keyword
     if (!match("KEYWORD")) error("Expected type keyword");
+    node.children.push_back(ParseNode{"Type"});
     if (!match("IDENTIFIER")) error("Expected identifier");
-    if (match("OPERATOR", "=")) Expression();
-    if (!match("DELIMITER", ";")) error("Expected ';'");
-}
+    node.children.push_back(ParseNode{"Identifier"});
 
-void Assignment() {
-    if (!match("IDENTIFIER")) error("Expected identifier");
-    if (!match("OPERATOR", "=")) error("Expected '='");
-    Expression();
-    if (!match("DELIMITER", ";")) error("Expected ';'");
-}
-
-void IfStatement() {
-    if (!match("KEYWORD", "if")) error("Expected 'if'");
-    if (!match("DELIMITER", "(")) error("Expected '(' after if");
-    Condition();
-    if (!match("DELIMITER", ")")) error("Expected ')'");
-    Block();
-    if (match("KEYWORD", "else")) {
-        Block();
+    if (match("OPERATOR", "=")){
+        node.children.push_back(ParseNode{"="});
+        node.children.push_back(Expression());
     }
+    if (!match("DELIMITER", ";")) error("Expected ';'");
+    return node;
 }
 
-void WhileLoop() {
-    if (!match("KEYWORD", "while")) error("Expected 'while'");
-    if (!match("DELIMITER", "(")) error("Expected '(' after while");
-    Condition();
+ParseNode Assignment() {
+    ParseNode node{"Assignment"};
+    if (!match("IDENTIFIER")) error("Expected identifier");
+    node.children.push_back(ParseNode{"Identifier"});
+    if (!match("OPERATOR", "=")) error("Expected '='");
+    node.children.push_back(ParseNode{"="});
+
+    node.children.push_back(Expression());
+    if (!match("DELIMITER", ";")) error("Expected ';'");
+    return node;
+}
+
+ParseNode IfStatement() {
+    ParseNode node{"IfStatement"};
+    if (!match("KEYWORD", "if")) error("Expected 'if'");
+    node.children.push_back({"if"});
+    if (!match("DELIMITER", "(")) error("Expected '(' after if");
+    node.children.push_back(Condition());
     if (!match("DELIMITER", ")")) error("Expected ')'");
-    Block();
+    node.children.push_back(Block());
+    if (match("KEYWORD", "else")) {
+        node.children.push_back({"else"});
+        node.children.push_back(Block());
+    }
+    return node;
+}
+ParseNode WhileLoop() {
+    ParseNode node{"WhileLoop"};
+    if (!match("KEYWORD", "while")) error("Expected 'while'");
+    node.children.push_back({"while"});
+    if (!match("DELIMITER", "(")) error("Expected '(' after while");
+    node.children.push_back(Condition());
+    if (!match("DELIMITER", ")")) error("Expected ')'");
+    node.children.push_back(Block());
+    return node;
 }
 
-void ForLoop() {
+ParseNode ForLoop() {
+    ParseNode node{"ForLoop"};
     if (!match("KEYWORD", "for")) error("Expected 'for'");
+    node.children.push_back({"for"});
     if (!match("DELIMITER", "(")) error("Expected '(' after for");
 
-    // For loop init: can be declaration, assignment, or empty
     if (peek().type == "KEYWORD") {
-        DeclarationOrAssignment();
+        node.children.push_back(DeclarationOrAssignment());
     } else if (peek().type == "IDENTIFIER") {
-        Assignment();
+        node.children.push_back(Assignment());
     } else if (match("DELIMITER", ";")) {
-        // empty init
+        node.children.push_back({"EmptyInit"});
     } else {
-        error("Expected initialization in for loop");
+        error("Expected for loop initialization");
     }
 
-    // Condition (optional)
     if (peek().type != "DELIMITER" || peek().value != ";") {
-        Condition();
+        node.children.push_back(Condition());
     }
-    if (!match("DELIMITER", ";")) error("Expected ';' after for loop condition");
+    if (!match("DELIMITER", ";")) error("Expected ';' after condition");
 
-    // Update (optional)
     if (peek().type != "DELIMITER" || peek().value != ")") {
         if (peek().type == "IDENTIFIER") {
-            // for update, e.g., i = i + 1
-            if (!match("IDENTIFIER")) error("Expected identifier in for update");
-            if (!match("OPERATOR", "=")) error("Expected '=' in for update");
-            Expression();
+            node.children.push_back(Assignment());
         } else {
-            error("Expected update expression in for loop");
+            error("Expected update expression");
         }
     }
-
-    if (!match("DELIMITER", ")")) error("Expected ')' to close for loop header");
-    Block();
+    if (!match("DELIMITER", ")")) error("Expected ')' after for");
+    node.children.push_back(Block());
+    return node;
 }
 
 
 
 
-void Switch() {
+ParseNode SwitchStatement() {
+    ParseNode node{"SwitchStatement"};
     if (!match("KEYWORD", "switch")) error("Expected 'switch'");
+    node.children.push_back({"switch"});
     if (!match("DELIMITER", "(")) error("Expected '(' after switch");
-    if (!match("IDENTIFIER")) error("Expected identifier in switch");
-    if (!match("DELIMITER", ")")) error("Expected ')'");
-    if (!match("DELIMITER", "{")) error("Expected '{'");
+    node.children.push_back(Expression());
+    if (!match("DELIMITER", ")")) error("Expected ')' after switch expression");
+    if (!match("DELIMITER", "{")) error("Expected '{' after switch") ;
 
     while (peek().type == "KEYWORD" && peek().value == "case") {
-        get(); // consume 'case'
-        if (peek().type != "NUMBER" && peek().type != "IDENTIFIER") error("Expected case value");
-        get(); // consume case value
+        get();
+        ParseNode caseNode{"case"};
+        if (!(peek().type == "NUMBER" || peek().type == "IDENTIFIER")) error("Expected case value");
+        Token val = get();
+        caseNode.children.push_back({val.value});
         if (!match("DELIMITER", ":")) error("Expected ':' after case value");
-
         while (!(peek().type == "KEYWORD" && (peek().value == "case" || peek().value == "default")) && !(peek().type == "DELIMITER" && peek().value == "}")) {
-            Statement();
+            caseNode.children.push_back(Statement());
         }
+        node.children.push_back(caseNode);
     }
 
     if (peek().type == "KEYWORD" && peek().value == "default") {
-        get(); // consume 'default'
+        get();
+        ParseNode defaultNode{"default"};
         if (!match("DELIMITER", ":")) error("Expected ':' after default");
         while (!(peek().type == "DELIMITER" && peek().value == "}")) {
-            Statement();
+            defaultNode.children.push_back(Statement());
         }
+        node.children.push_back(defaultNode);
     }
 
-    if (!match("DELIMITER", "}")) error("Expected '}' to end switch");
-}
+    if (!match("DELIMITER", "}")) error("Expected '}' to end switch block");
 
-void Block() {
+    return node;
+}
+ParseNode Block() {
+    ParseNode node{"Block"};
     if (match("DELIMITER", "{")) {
         while (!match("DELIMITER", "}")) {
-            Statement();
+             node.children.push_back(Statement());
         }
     } else {
-        Statement();
+        node.children.push_back(Statement());
     }
+    return node;
 }
 
-void StreamStatement() {
-    Token streamToken = get(); // Consume 'cout' or 'cin'
-    
-    // Expect << for cout or >> for cin
+ParseNode StreamStatement() {
+    Token streamToken = get(); // consume 'cout' or 'cin'
+    ParseNode node{"StreamStatement: " + streamToken.value};
+
     string expectedOp = (streamToken.value == "cout") ? "<<" : ">>";
-    
+
     do {
         if (!match("OPERATOR", expectedOp)) {
             error("Expected '" + expectedOp + "' after " + streamToken.value);
         }
-        Expression(); // Parse the expression being streamed
+        ParseNode expr = Expression();
+        node.children.push_back(expr);
     } while (peek().value == expectedOp);
 
     if (!match("DELIMITER", ";")) {
         error("Expected ';' after " + streamToken.value + " statement");
     }
+
+    return node;
 }
 
 
-void Statement() {
+ParseNode Statement() {
+    ParseNode node{"Statement"};
 
      
     if (peek().type == "KEYWORD") {
         string kw = peek().value;
 
         if (kw == "int" || kw == "float" || kw == "char" || kw == "double") {
-            DeclarationOrAssignment();
+             node.children.push_back(DeclarationOrAssignment());
         }
         else if (kw == "cout" || kw == "cin") {
-            StreamStatement();
-            return;
+            node.children.push_back(StreamStatement());
+
         }
         else if (kw == "void") {
             error("Void type cannot be used for variable declaration");
         }
         else if (kw == "if") {
-            IfStatement();
+            node.children.push_back(IfStatement());
         }
         else if (kw == "while") {
-            WhileLoop();
+            node.children.push_back(WhileLoop());
         }
         else if (kw == "for") {
-            ForLoop();
+            node.children.push_back(ForLoop());
         }
         else if (kw == "switch") {
-            Switch();
+             node.children.push_back(SwitchStatement());
         }
         else if (kw == "return") {
             get(); // consume 'return'
-            // check if return is followed by an expression or just ;
+            ParseNode returnNode{"return"};
             if (!(peek().type == "DELIMITER" && peek().value == ";")) {
-                Expression();  // return value
+                returnNode.children.push_back(Expression());  // return value
             }
             if (!match("DELIMITER", ";")) {
                 error("Expected ';' after return");
             }
+            node.children.push_back(returnNode);
+
         }
         else if (kw == "break") {
             get(); // consume 'break'
@@ -382,14 +448,16 @@ void Statement() {
         }
     }
     else if (peek().type == "IDENTIFIER") {
-        Assignment();
+        node.children.push_back(Assignment());
     }
     else {
         error("Unexpected token");
     }
+    return node;
 }
 
-void FunctionDefinition() {
+ParseNode FunctionDefinition() {
+    ParseNode node{"FunctionDefinition"};
     if (!match("KEYWORD")) error("Expected return type");
     if (!match("IDENTIFIER")) error("Expected function name");
     if (!match("DELIMITER", "(")) error("Expected '(' after function name");
@@ -400,10 +468,14 @@ void FunctionDefinition() {
         } while (match("DELIMITER", ","));
     }
     if (!match("DELIMITER", ")")) error("Expected ')' after parameters");
-    Block();
+    ParseNode blockNode = Block();
+    node.children.push_back(blockNode);
+
+    return node;
 }
 
-void Program() {
+ParseNode Program() {
+    ParseNode node{"Program"};
     while (peek().type != "END") {
         if (peek().type == "KEYWORD") {
             string val = peek().value;
@@ -411,15 +483,18 @@ void Program() {
             Token next2 = (current+2 < (int)tokens.size()) ? tokens[current+2] : Token{"",""};
             if ((val == "int" || val == "float" || val == "char" || val == "double" || val == "void") &&
                 next1.type == "IDENTIFIER" && next2.type == "DELIMITER" && next2.value == "(") {
-                FunctionDefinition();
+                node.children.push_back(FunctionDefinition());
             } else {
-                Statement();
+                node.children.push_back(Statement());
+
             }
         } else {
-            Statement();
+            node.children.push_back(Statement());
+
         }
     }
     cout << "\n✅ Syntax is correct.\n";
+    return node;
 }
 
 
@@ -440,7 +515,11 @@ int main(int argc, char* argv[]) {
     infile.close();
 
     lexicalAnalyse(code);
-    Program();
+    ParseNode root = Program();
+    json treeJson = nodeToJson(root);
+    ofstream outTree("parse_tree.json");
+    outTree << treeJson.dump(4);
+    outTree.close();
 
     // Prepare JSON token output
     json j;

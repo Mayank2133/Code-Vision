@@ -1,0 +1,380 @@
+{
+    "children": [
+        {
+            "children": [
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "1"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "2"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "3"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "4"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "a"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        },
+                                                        {
+                                                            "children": [],
+                                                            "name": "Operator: *"
+                                                        },
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "b"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "d"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                },
+                                                {
+                                                    "children": [],
+                                                    "name": "Operator: +"
+                                                },
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "c"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [],
+                                            "name": "Type"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "Identifier"
+                                        },
+                                        {
+                                            "children": [],
+                                            "name": "="
+                                        },
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "f"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                },
+                                                {
+                                                    "children": [],
+                                                    "name": "Operator: +"
+                                                },
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "e"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "DeclarationOrAssignment"
+                                }
+                            ],
+                            "name": "Statement"
+                        },
+                        {
+                            "children": [
+                                {
+                                    "children": [
+                                        {
+                                            "children": [
+                                                {
+                                                    "children": [
+                                                        {
+                                                            "children": [
+                                                                {
+                                                                    "children": [],
+                                                                    "name": "answer:+g"
+                                                                }
+                                                            ],
+                                                            "name": "Factor"
+                                                        }
+                                                    ],
+                                                    "name": "Term"
+                                                }
+                                            ],
+                                            "name": "Expression"
+                                        }
+                                    ],
+                                    "name": "StreamStatement: cout"
+                                }
+                            ],
+                            "name": "Statement"
+                        }
+                    ],
+                    "name": "Block"
+                }
+            ],
+            "name": "FunctionDefinition"
+        }
+    ],
+    "name": "Program"
+}

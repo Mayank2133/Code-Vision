@@ -1,4 +1,11 @@
 int main() {
     int a=1;
-    cout << "Hello"
+    int b=2;
+    int c=3;
+    int d=4;
+    int e=a*b;
+    int f=d+c;
+    int g=f+e;
+    cout<<"answer:+g";
+    
 }

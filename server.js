@@ -20,6 +20,8 @@ app.post("/compile", (req, res) => {
     fs.unlinkSync("symbols.json"); // delete old symbol table
     }
 
+    if (fs.existsSync("parse_tree.json")) fs.unlinkSync("parse_tree.json");
+
 
     exec("g++ -std=c++11 parser/input.cpp -o parser.exe && parser.exe input.txt", (err, stdout, stderr) => {
         if (err) {
@@ -35,13 +37,24 @@ app.post("/compile", (req, res) => {
             return res.status(500).send("Symbol file not generated");
         }
 
-        try {
-            const symbols = JSON.parse(fs.readFileSync("symbols.json", "utf8"));
-            res.json(symbols);
-        } catch(parseErr) {
-            console.error("Error parsing symbols.json:", parseErr);
-            return res.status(500).send("Failed to parse symbols.json");
+        if (!fs.existsSync("parse_tree.json")) {
+        res.status(500).send("parse_tree.json not found");
+        return;
         }
+
+        try {
+            const symbolsRaw = JSON.parse(fs.readFileSync("symbols.json", "utf8"));
+            const symbols = symbolsRaw.symbols || [];  // ✅ extract array safely
+
+            const parseTree = JSON.parse(fs.readFileSync("parse_tree.json", "utf8"));
+
+            res.json({ symbols, parseTree });
+        } catch(parseErr) {
+             console.error("Error parsing JSON outputs:", parseErr);
+             return res.status(500).send("Failed to parse output JSON");
+        }
+        
+
     });
 });
 

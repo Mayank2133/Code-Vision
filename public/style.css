@@ -242,4 +242,20 @@ tr:hover {
 .monaco-editor {
     font-family: 'Consolas', monospace !important;
 }
+.link {
+  fill: none;
+  stroke: #6c757d;
+  stroke-width: 1.5px;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: #2980b9;
+  stroke-width: 2px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
 
