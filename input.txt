@@ -1,11 +1,4 @@
-int main() {
+int main(){
     int a=1;
-    int b=2;
-    int c=3;
-    int d=4;
-    int e=a*b;
-    int f=d+c;
-    int g=f+e;
-    cout<<"answer:+g";
-    
+    int b=1+a;
 }

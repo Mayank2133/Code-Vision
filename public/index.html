@@ -24,27 +24,26 @@
         </div>
 
         <div class="results">
-            <div class="panel">
+            <div class="panel" id="symbol-panel">
                 <h2>Symbol Table</h2>
                 <div class="table-container">
                     <table id="symbol-table">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Line</th>
-                            </tr>
+                        <tr><th>Name</th><th>Type</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="panel">
+            <div class="panel" id="ast-panel">
                 <h2>Parse Tree</h2>
                 <div id="ast-visualization"></div>
             </div>
+            <button id="download-btn">Download Parse Tree</button>
+
         </div>
+
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -55,7 +54,7 @@
     require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
     require(['vs/editor/editor.main'], function() {
         const editor = monaco.editor.create(document.getElementById('code'), {
-        value: `int main() {\n    // Your code here\n}`,  // Default code
+        value: `int main() {\n    \n}`,  // Default code
         language: 'cpp',
         theme: 'vs-dark',
         fontSize: 14,
