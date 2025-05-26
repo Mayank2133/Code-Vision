@@ -208,7 +208,7 @@ cursor: grab;
 }
 
 #ast-visualization::before {
-    content: "Parse Tree Visualization Area";
+    
     position: absolute;
     top: 50%;
     left: 50%;

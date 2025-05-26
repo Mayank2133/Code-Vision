@@ -45,54 +45,53 @@ document.getElementById("compile-btn").addEventListener("click", async () => {
     function drawParseTree(treeData) {
     // Clear previous tree
     d3.select("#ast-visualization").selectAll("*").remove();
+    const container = d3.select("#ast-visualization");
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
 
-    const width = 1200;
-    const height = 1000;
-
-    const svg = d3.select("#ast-visualization")
-        .append("svg")
+    const svg = container.append("svg")
         .attr("width", width)
         .attr("height", height)
-        .call(d3.zoom().on("zoom", (event) => {
-            svgGroup.attr("transform", event.transform);
-        }));
+        .append("g")
+        .attr("transform", `translate(${width / 2}, 40)`); // move root to top center
 
-        const svgGroup = svg.append("g").attr("transform", "translate(60,40)");
+    // Build hierarchy
+    const root = d3.hierarchy(treeData);
+    const treeLayout = d3.tree().size([width - 100, height - 100]);
+    treeLayout(root);
 
-        const root = d3.hierarchy(treeData);
-        const treeLayout = d3.tree().nodeSize([40, 140]); // x: horizontal spread, y: vertical depth
+    // Links
+    svg.selectAll(".link")
+        .data(root.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("fill", "none")
+        .attr("stroke", "#333")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.linkVertical()
+            .x(d => d.x - width / 2) // center horizontally
+            .y(d => d.y));
 
-        treeLayout(root);
+    // Nodes
+    const node = svg.selectAll(".node")
+        .data(root.descendants())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x - width / 2},${d.y})`);
 
-        // Links (edges)
-        svgGroup.selectAll(".link")
-            .data(root.links())
-            .enter().append("path")
-            .attr("class", "link")
-            .attr("fill", "none")
-            .attr("stroke", "#999")
-            .attr("stroke-width", 1.5)
-            .attr("d", d3.linkVertical()
-                .x(d => d.x)
-                .y(d => d.y));
+    node.append("circle")
+        .attr("r", 5)
+        .attr("fill", "#fff")
+        .attr("stroke", "#333")
+        .attr("stroke-width", 1.5);
 
-        // Nodes (circles)
-        const node = svgGroup.selectAll(".node")
-            .data(root.descendants())
-            .enter().append("g")
-            .attr("class", "node")
-            .attr("transform", d => `translate(${d.x},${d.y})`);
-
-        node.append("circle")
-            .attr("r", 6)
-            .attr("fill", "#3399cc");
-
-        // Labels above the node
-        node.append("text")
-            .attr("text-anchor", "middle")
-            .attr("dy", "-0.8em")
-            .style("font-size", "12px")
-            .text(d => d.data.name);
+    node.append("text")
+        .attr("dy", -10) // move text above node to avoid overlap
+        .attr("text-anchor", "middle")
+        .style("font-family", "Arial, sans-serif")
+        .style("font-size", "13px")
+        .style("fill", "#222") // same color as stroke
+        .text(d => d.data.name);
 
             document.getElementById("download-btn").onclick = () => {
             const svgNode = document.querySelector("#ast-visualization svg");
