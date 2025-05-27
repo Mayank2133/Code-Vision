@@ -3,9 +3,9 @@
 ## 📌 Project Overview
 A full-stack web application that allows users to input C++ code, which is then processed through a custom-built C++ lexical and syntax analyzer. The application returns a symbol table and (upcoming) abstract syntax tree (AST) for visualization in the browser. Built using **Node.js**, **Express**, and **C++**.
 
-![Home Page](./screenshots/home.png)  
-![Symbol Table Output](./screenshots/symbol_table.png)  
-![Compiler JSON Output](./screenshots/json_output.png)
+![Code editor](./screenshots/Screenshot%202025-05-26%20190746.png)  
+![Symbol Table Output](/screenshots/Screenshot%202025-05-26%20190759.png)  
+![Compiler JSON Output](/screenshots/Screenshot%202025-05-26%20195222.png)
 
 ---
 
